@@ -62,6 +62,12 @@ interface HospitalItem {
   created_at?: string;
 }
 
+function extractPinCode(address: string): string {
+  if (!address) return "";
+  const match = address.match(/\b\d{6}\b/);
+  return match ? match[0] : "";
+}
+
 export default function HospitalManagement() {
   const { toast } = useToast();
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -216,7 +222,7 @@ export default function HospitalManagement() {
       address_lane2: hospital.address_lane2 || "",
       state: hospital.state || "",
       district: hospital.district || "",
-      pin_code: hospital.pin_code || "",
+      pin_code: hospital.pin_code || extractPinCode(hospital.address || "") || "",
       hospital_type: hospital.hospital_type || "General",
       license_number: hospital.license_number || "",
       number_of_ambulances: String(hospital.number_of_ambulances || 0),
