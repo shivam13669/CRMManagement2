@@ -224,7 +224,8 @@ export default function HospitalManagement() {
       address_lane2: hospital.address_lane2 || "",
       state: hospital.state || "",
       district: hospital.district || "",
-      pin_code: hospital.pin_code || extractPinCode(hospital.address || "") || "",
+      pin_code:
+        hospital.pin_code || extractPinCode(hospital.address || "") || "",
       hospital_type: hospital.hospital_type || "General",
       license_number: hospital.license_number || "",
       number_of_ambulances: String(hospital.number_of_ambulances || 0),
@@ -637,7 +638,10 @@ export default function HospitalManagement() {
                             setUpdateCredentials(Boolean(checked))
                           }
                         />
-                        <Label htmlFor="update_credentials" className="cursor-pointer">
+                        <Label
+                          htmlFor="update_credentials"
+                          className="cursor-pointer"
+                        >
                           Update Login Credentials
                         </Label>
                       </div>
@@ -678,7 +682,9 @@ export default function HospitalManagement() {
                           />
                         </div>
                         <div className="md:col-span-2">
-                          <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                          <Label htmlFor="confirmPassword">
+                            Confirm Password *
+                          </Label>
                           <Input
                             id="confirmPassword"
                             type="password"
