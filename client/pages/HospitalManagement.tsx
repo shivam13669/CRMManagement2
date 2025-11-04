@@ -222,7 +222,8 @@ export default function HospitalManagement() {
       hospital_name: hospital.hospital_name || "",
       address_lane1:
         hospital.address_lane1 ||
-        ((hospital.address || "").split(",")[0]?.trim() || ""),
+        (hospital.address || "").split(",")[0]?.trim() ||
+        "",
       address_lane2:
         hospital.address_lane2 ||
         (() => {
@@ -321,7 +322,10 @@ export default function HospitalManagement() {
       }
 
       if (!/^\d{6}$/.test(formData.pin_code)) {
-        toast({ title: "Enter a valid 6-digit PIN code", variant: "destructive" });
+        toast({
+          title: "Enter a valid 6-digit PIN code",
+          variant: "destructive",
+        });
         return;
       }
     } else {

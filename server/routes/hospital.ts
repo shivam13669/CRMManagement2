@@ -93,7 +93,9 @@ export const handleCreateHospital: RequestHandler = async (req, res) => {
     }
 
     if (!/^\d{6}$/.test(pin_code)) {
-      return res.status(400).json({ error: "PIN code must be a valid 6-digit number" });
+      return res
+        .status(400)
+        .json({ error: "PIN code must be a valid 6-digit number" });
     }
 
     // Check if email already exists
