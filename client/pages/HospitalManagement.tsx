@@ -220,7 +220,7 @@ export default function HospitalManagement() {
       password: "",
       confirmPassword: "",
       hospital_name: hospital.hospital_name || "",
-      address_lane1: hospital.address_lane1 || hospital.address || "",
+      address_lane1: hospital.address_lane1 || "",
       address_lane2: hospital.address_lane2 || "",
       state: hospital.state || "",
       district: hospital.district || "",
