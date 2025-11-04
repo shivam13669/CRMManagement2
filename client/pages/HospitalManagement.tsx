@@ -220,7 +220,9 @@ export default function HospitalManagement() {
       password: "",
       confirmPassword: "",
       hospital_name: hospital.hospital_name || "",
-      address_lane1: hospital.address_lane1 || "",
+      address_lane1:
+        hospital.address_lane1 ||
+        ((hospital.address || "").split(",")[0]?.trim() || ""),
       address_lane2: hospital.address_lane2 || "",
       state: hospital.state || "",
       district: hospital.district || "",
@@ -324,7 +326,7 @@ export default function HospitalManagement() {
       if (editingHospitalId) {
         // Admin update
         const address =
-          `${formData.address_lane1} ${formData.address_lane2 || ""} ${formData.state || ""} ${formData.district || ""} ${formData.pin_code || ""}`.trim();
+          `${formData.address_lane1}${formData.address_lane2 ? ", " + formData.address_lane2 : ""}, ${formData.district}, ${formData.state} ${formData.pin_code || ""}`.trim();
         const response = await fetch(
           `/api/admin/hospitals/${editingHospitalId}`,
           {
