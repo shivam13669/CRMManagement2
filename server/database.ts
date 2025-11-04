@@ -1348,15 +1348,21 @@ export function createHospital(hospital: Hospital): number {
     db.run(
       `
       INSERT INTO hospitals (
-        user_id, hospital_name, address, phone_number, hospital_type,
+        user_id, hospital_name, address, address_lane1, address_lane2, state, district, pin_code,
+        phone_number, hospital_type,
         license_number, number_of_ambulances, number_of_beds, departments,
         google_map_enabled, google_map_link, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
     `,
       [
         hospital.user_id,
         hospital.hospital_name,
         hospital.address,
+        hospital.address_lane1 || null,
+        hospital.address_lane2 || null,
+        hospital.state || null,
+        hospital.district || null,
+        hospital.pin_code || null,
         hospital.phone_number || null,
         hospital.hospital_type || null,
         hospital.license_number || null,
