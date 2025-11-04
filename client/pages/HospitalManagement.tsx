@@ -310,12 +310,18 @@ export default function HospitalManagement() {
         !formData.hospital_name ||
         !formData.address_lane1 ||
         !formData.state ||
-        !formData.district
+        !formData.district ||
+        !formData.pin_code
       ) {
         toast({
           title: "Please fill all required fields",
           variant: "destructive",
         });
+        return;
+      }
+
+      if (!/^\d{6}$/.test(formData.pin_code)) {
+        toast({ title: "Enter a valid 6-digit PIN code", variant: "destructive" });
         return;
       }
     } else {
@@ -816,9 +822,13 @@ export default function HospitalManagement() {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="pin_code">PIN Code</Label>
+                        <Label htmlFor="pin_code">PIN Code *</Label>
                         <Input
                           id="pin_code"
+                          inputMode="numeric"
+                          pattern="\\d{6}"
+                          maxLength={6}
+                          required={!editingHospitalId}
                           value={formData.pin_code}
                           onChange={(e) =>
                             setFormData((p) => ({
