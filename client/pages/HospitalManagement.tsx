@@ -62,6 +62,12 @@ interface HospitalItem {
   created_at?: string;
 }
 
+function extractPinCode(address: string): string {
+  if (!address) return "";
+  const match = address.match(/\b\d{6}\b/);
+  return match ? match[0] : "";
+}
+
 export default function HospitalManagement() {
   const { toast } = useToast();
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -96,6 +102,7 @@ export default function HospitalManagement() {
   const [contactNumbers, setContactNumbers] = useState<string[]>([]);
   const [departmentInput, setDepartmentInput] = useState("");
   const [departmentItems, setDepartmentItems] = useState<string[]>([]);
+  const [updateCredentials, setUpdateCredentials] = useState(false);
 
   useEffect(() => {
     fetchHospitals();
@@ -206,6 +213,7 @@ export default function HospitalManagement() {
 
   const openEdit = (hospital: any) => {
     setEditingHospitalId(hospital.id);
+    setUpdateCredentials(false);
     setFormData((p) => ({
       ...p,
       email: hospital.email || "",
@@ -216,7 +224,8 @@ export default function HospitalManagement() {
       address_lane2: hospital.address_lane2 || "",
       state: hospital.state || "",
       district: hospital.district || "",
-      pin_code: hospital.pin_code || "",
+      pin_code:
+        hospital.pin_code || extractPinCode(hospital.address || "") || "",
       hospital_type: hospital.hospital_type || "General",
       license_number: hospital.license_number || "",
       number_of_ambulances: String(hospital.number_of_ambulances || 0),
@@ -594,6 +603,7 @@ export default function HospitalManagement() {
                     setContactNumberInput("");
                     setDepartmentItems([]);
                     setDepartmentInput("");
+                    setUpdateCredentials(false);
                   }}
                 >
                   <Plus className="w-4 h-4 mr-2" />
@@ -606,8 +616,9 @@ export default function HospitalManagement() {
                     {editingHospitalId ? "Edit Hospital" : "Add New Hospital"}
                   </DialogTitle>
                   <DialogDescription>
-                    Admin-only creation. The hospital will log in using the
-                    email and password you set here.
+                    {editingHospitalId
+                      ? "Update hospital details. Use 'Update Login Credentials' to change email or password."
+                      : "Admin-only creation. The hospital will log in using the email and password you set here."}
                   </DialogDescription>
                 </DialogHeader>
 
@@ -617,58 +628,79 @@ export default function HospitalManagement() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       Login Credentials
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="email">Email *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) =>
-                            setFormData((p) => ({
-                              ...p,
-                              email: e.target.value,
-                            }))
+
+                    {editingHospitalId && (
+                      <div className="flex items-center space-x-2 mb-4">
+                        <Checkbox
+                          id="update_credentials"
+                          checked={updateCredentials}
+                          onCheckedChange={(checked) =>
+                            setUpdateCredentials(Boolean(checked))
                           }
-                          placeholder="admin@hospital.com"
-                          required
                         />
-                      </div>
-                      <div>
-                        <Label htmlFor="password">Password *</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          value={formData.password}
-                          onChange={(e) =>
-                            setFormData((p) => ({
-                              ...p,
-                              password: e.target.value,
-                            }))
-                          }
-                          placeholder="••••••••"
-                          required
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <Label htmlFor="confirmPassword">
-                          Confirm Password *
+                        <Label
+                          htmlFor="update_credentials"
+                          className="cursor-pointer"
+                        >
+                          Update Login Credentials
                         </Label>
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          value={formData.confirmPassword}
-                          onChange={(e) =>
-                            setFormData((p) => ({
-                              ...p,
-                              confirmPassword: e.target.value,
-                            }))
-                          }
-                          placeholder="••••••••"
-                          required
-                        />
                       </div>
-                    </div>
+                    )}
+
+                    {(!editingHospitalId || updateCredentials) && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="email">Email *</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) =>
+                              setFormData((p) => ({
+                                ...p,
+                                email: e.target.value,
+                              }))
+                            }
+                            placeholder="admin@hospital.com"
+                            required={!editingHospitalId}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="password">Password *</Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) =>
+                              setFormData((p) => ({
+                                ...p,
+                                password: e.target.value,
+                              }))
+                            }
+                            placeholder="••••••••"
+                            required={!editingHospitalId}
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <Label htmlFor="confirmPassword">
+                            Confirm Password *
+                          </Label>
+                          <Input
+                            id="confirmPassword"
+                            type="password"
+                            value={formData.confirmPassword}
+                            onChange={(e) =>
+                              setFormData((p) => ({
+                                ...p,
+                                confirmPassword: e.target.value,
+                              }))
+                            }
+                            placeholder="••••••••"
+                            required={!editingHospitalId}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Hospital Details */}
