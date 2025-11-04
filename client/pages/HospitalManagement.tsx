@@ -220,8 +220,17 @@ export default function HospitalManagement() {
       password: "",
       confirmPassword: "",
       hospital_name: hospital.hospital_name || "",
-      address_lane1: hospital.address_lane1 || hospital.address || "",
-      address_lane2: hospital.address_lane2 || "",
+      address_lane1:
+        hospital.address_lane1 ||
+        (hospital.address || "").split(",")[0]?.trim() ||
+        "",
+      address_lane2:
+        hospital.address_lane2 ||
+        (() => {
+          const parts = (hospital.address || "").split(",");
+          const second = (parts[1] || "").trim();
+          return second && second !== hospital.district ? second : "";
+        })(),
       state: hospital.state || "",
       district: hospital.district || "",
       pin_code:
@@ -302,10 +311,19 @@ export default function HospitalManagement() {
         !formData.hospital_name ||
         !formData.address_lane1 ||
         !formData.state ||
-        !formData.district
+        !formData.district ||
+        !formData.pin_code
       ) {
         toast({
           title: "Please fill all required fields",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!/^\d{6}$/.test(formData.pin_code)) {
+        toast({
+          title: "Enter a valid 6-digit PIN code",
           variant: "destructive",
         });
         return;
@@ -324,7 +342,7 @@ export default function HospitalManagement() {
       if (editingHospitalId) {
         // Admin update
         const address =
-          `${formData.address_lane1} ${formData.address_lane2 || ""} ${formData.state || ""} ${formData.district || ""} ${formData.pin_code || ""}`.trim();
+          `${formData.address_lane1}${formData.address_lane2 ? ", " + formData.address_lane2 : ""}, ${formData.district}, ${formData.state} ${formData.pin_code || ""}`.trim();
         const response = await fetch(
           `/api/admin/hospitals/${editingHospitalId}`,
           {
@@ -808,9 +826,13 @@ export default function HospitalManagement() {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="pin_code">PIN Code</Label>
+                        <Label htmlFor="pin_code">PIN Code *</Label>
                         <Input
                           id="pin_code"
+                          inputMode="numeric"
+                          pattern="\\d{6}"
+                          maxLength={6}
+                          required={!editingHospitalId}
                           value={formData.pin_code}
                           onChange={(e) =>
                             setFormData((p) => ({

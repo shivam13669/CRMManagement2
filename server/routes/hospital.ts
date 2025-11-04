@@ -83,12 +83,19 @@ export const handleCreateHospital: RequestHandler = async (req, res) => {
       !full_name ||
       !address_lane1 ||
       !state ||
-      !district
+      !district ||
+      !pin_code
     ) {
       return res.status(400).json({
         error:
-          "Missing required fields: email, password, hospital_name, address_lane1, state, district, full_name",
+          "Missing required fields: email, password, hospital_name, address_lane1, state, district, pin_code, full_name",
       });
+    }
+
+    if (!/^\d{6}$/.test(pin_code)) {
+      return res
+        .status(400)
+        .json({ error: "PIN code must be a valid 6-digit number" });
     }
 
     // Check if email already exists
