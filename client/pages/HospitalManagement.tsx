@@ -418,32 +418,10 @@ export default function HospitalManagement() {
 
       let data: any = {};
 
-      // Read response content type to handle different response types
-      const contentType = response.headers.get("content-type");
-
       try {
-        if (contentType && contentType.includes("application/json")) {
-          // Clone the response to safely read the body
-          const clonedResponse = response.clone();
-          const text = await clonedResponse.text();
-
-          if (text) {
-            try {
-              data = JSON.parse(text);
-            } catch (parseError) {
-              console.error("Failed to parse JSON:", parseError);
-              data = { message: text };
-            }
-          } else {
-            data = { message: "Empty response" };
-          }
-        } else {
-          // If not JSON, read as text
-          const text = await response.clone().text();
-          data = { message: text || "No response content" };
-        }
+        data = await response.json();
       } catch (e) {
-        console.error("Failed to read response:", e);
+        console.error("Failed to parse response:", e);
         data = { message: "Failed to read server response" };
       }
 

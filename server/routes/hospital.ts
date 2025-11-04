@@ -4,6 +4,7 @@ import {
   createUser,
   createHospital,
   getHospitalByUserId,
+  getHospitalById,
   getAllHospitals,
   updateHospital,
   getUserByEmail,
