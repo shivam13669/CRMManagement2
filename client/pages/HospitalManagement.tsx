@@ -223,7 +223,13 @@ export default function HospitalManagement() {
       address_lane1:
         hospital.address_lane1 ||
         ((hospital.address || "").split(",")[0]?.trim() || ""),
-      address_lane2: hospital.address_lane2 || "",
+      address_lane2:
+        hospital.address_lane2 ||
+        (() => {
+          const parts = (hospital.address || "").split(",");
+          const second = (parts[1] || "").trim();
+          return second && second !== hospital.district ? second : "";
+        })(),
       state: hospital.state || "",
       district: hospital.district || "",
       pin_code:
